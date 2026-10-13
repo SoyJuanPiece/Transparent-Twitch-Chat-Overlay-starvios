@@ -14,10 +14,13 @@ public class TwitchPopoutProvider : IChatProvider
     public Uri GetNavigationUri()
     {
         string username = App.Settings.GeneralSettings.Username;
+        if (username.Contains("/"))
+            username = username.Split('/').Last();
+
         if (string.IsNullOrWhiteSpace(username))
             throw new ArgumentException("Username cannot be empty or whitespace.", nameof(username));
 
-        string url = $"https://www.twitch.tv/popout/{username}/chat?popout=";
+        string url = $"https://starvios.com/live/{username}";
         return new Uri(url);
     }
 
