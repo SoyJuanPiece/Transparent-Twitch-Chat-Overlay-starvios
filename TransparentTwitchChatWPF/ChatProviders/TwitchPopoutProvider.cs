@@ -1,4 +1,4 @@
-﻿using Microsoft.Web.WebView2.Core;
+using Microsoft.Web.WebView2.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,14 +13,16 @@ public class TwitchPopoutProvider : IChatProvider
 {
     public Uri GetNavigationUri()
     {
-        string username = App.Settings.GeneralSettings.Username ?? string.Empty;
-        if (string.IsNullOrWhiteSpace(username))
-            throw new ArgumentException("Username cannot be empty or whitespace.", nameof(username));
-
+        // Accepts "juanpiece", "juanpiece/", "https://starvios.com/live/juanpiece", etc.
+        string username = (App.Settings.GeneralSettings.Username ?? string.Empty).Trim().TrimEnd('/');
         if (username.Contains("/"))
             username = username.Split('/').Last();
 
-        string url = $"https://starvios.com/live/{username}";
+        if (string.IsNullOrWhiteSpace(username))
+            throw new ArgumentException("Username cannot be empty or whitespace.", nameof(username));
+
+        // Popout chat-only page: shows just the chat, not the full channel page.
+        string url = $"https://starvios.com/popout/chat/{username}";
         return new Uri(url);
     }
 
