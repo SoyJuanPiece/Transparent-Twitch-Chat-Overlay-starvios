@@ -4,6 +4,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using TransparentTwitchChatWPF.ChatProviders;
 using TransparentTwitchChatWPF.Utils;
 using Path = System.IO.Path;
 
@@ -40,6 +41,7 @@ public partial class ChatSettingsPage : UserControl
 
         this.tbUsername.Text = App.Settings.GeneralSettings.Username;
         this.tb_nativeChatUsername.Text = App.Settings.jChatSettings.Channel;
+        this.tbStarviosNativeUsername.Text = App.Settings.GeneralSettings.StarviosChannel;
         this.tbUsername2.Text = App.Settings.GeneralSettings.Username;
         this.tbTwitchPopoutUsername.Text = App.Settings.GeneralSettings.Username;
         this.cbRedemptions.IsChecked = App.Settings.GeneralSettings.RedemptionsEnabled;
@@ -62,6 +64,8 @@ public partial class ChatSettingsPage : UserControl
         this.cbBetterTtv_AdvMenu.IsChecked = App.Settings.GeneralSettings.BetterTtv_AdvEmoteMenu;
         this.cbFfz.IsChecked = App.Settings.GeneralSettings.FrankerFaceZ;
 
+
+        this.starviosNativeGrid.Visibility = Visibility.Hidden;
 
         if (Enum.IsDefined(typeof(ChatTypes), App.Settings.GeneralSettings.ChatType))
         {
@@ -110,6 +114,14 @@ public partial class ChatSettingsPage : UserControl
                 this.jChatGrid.Visibility = Visibility.Visible;
 
                 this.tbURL.Text = string.Empty;
+            }
+            else if (chatType == ChatTypes.StarviosNative)
+            {
+                this.kapChatGrid.Visibility = Visibility.Hidden;
+                this.twitchPopoutChat.Visibility = Visibility.Hidden;
+                this.customURLGrid.Visibility = Visibility.Hidden;
+                this.jChatGrid.Visibility = Visibility.Hidden;
+                this.starviosNativeGrid.Visibility = Visibility.Visible;
             }
         }
     }
@@ -181,6 +193,11 @@ public partial class ChatSettingsPage : UserControl
                 if (App.Settings.GeneralSettings.RedemptionsEnabled)
                     App.Settings.GeneralSettings.Username = this.tbUsername2.Text;
                 App.Settings.GeneralSettings.ChatNotificationSound = this.comboChatSound2.SelectedValue.ToString();
+            }
+            else if (chatType == ChatTypes.StarviosNative)
+            {
+                App.Settings.GeneralSettings.StarviosChannel = NativeChatProvider.NormalizeStarviosChannel(this.tbStarviosNativeUsername.Text);
+                App.Settings.jChatSettings.Channel = App.Settings.GeneralSettings.StarviosChannel;
             }
         }
     }
@@ -312,8 +329,17 @@ public partial class ChatSettingsPage : UserControl
     {
         App.Settings.GeneralSettings.ChatType = (int)chatType;
 
+        this.starviosNativeGrid.Visibility = Visibility.Hidden;
+
         switch (chatType)
         {
+            case ChatTypes.StarviosNative:
+                this.kapChatGrid.Visibility = Visibility.Hidden;
+                this.customURLGrid.Visibility = Visibility.Hidden;
+                this.twitchPopoutChat.Visibility = Visibility.Hidden;
+                this.jChatGrid.Visibility = Visibility.Hidden;
+                this.starviosNativeGrid.Visibility = Visibility.Visible;
+                break;
             case ChatTypes.NativeChat:
                 this.kapChatGrid.Visibility = Visibility.Hidden;
                 this.customURLGrid.Visibility = Visibility.Hidden;

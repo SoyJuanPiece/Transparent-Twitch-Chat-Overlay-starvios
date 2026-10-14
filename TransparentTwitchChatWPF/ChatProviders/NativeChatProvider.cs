@@ -13,6 +13,24 @@ namespace TransparentTwitchChatWPF.ChatProviders;
 
 public class NativeChatProvider : IChatProvider
 {
+    private readonly string _source;
+
+    /// <param name="source">Chat source for the NativeChat v2 engine: "twitch" (IRC, default) or "starvios".</param>
+    public NativeChatProvider(string source = "twitch")
+    {
+        _source = string.IsNullOrWhiteSpace(source) ? "twitch" : source;
+    }
+
+    /// <summary>Turns "https://starvios.com/live/JuanPiece/", "@juanpiece" or "juanpiece" into "juanpiece".</summary>
+    public static string NormalizeStarviosChannel(string input)
+    {
+        string s = (input ?? string.Empty).Trim();
+        s = s.Split('?', '#')[0].TrimEnd('/');
+        int slash = s.LastIndexOf('/');
+        if (slash >= 0) s = s.Substring(slash + 1);
+        return s.Trim().TrimStart('@');
+    }
+
     public Uri GetNavigationUri()
     {
         string hostName = OverlayPathHelper.GetNativeChatHostname();
@@ -22,6 +40,14 @@ public class NativeChatProvider : IChatProvider
     public Task ConfigureAsync(CoreWebView2 coreWebView2)
     {
         SyncChannelSettings();
+
+        // Set on every connect: the appearance page replaces jChatSettings from its own JSON,
+        // which does not carry the source, so it must be restored here.
+        App.Settings.jChatSettings.Source = _source;
+        if (_source == "starvios")
+        {
+            App.Settings.jChatSettings.Channel = NormalizeStarviosChannel(App.Settings.GeneralSettings.StarviosChannel);
+        }
 
         PostWebMessage(coreWebView2, "config", App.Settings.jChatSettings);
         PostWebMessage(coreWebView2, "credentials", new

@@ -169,7 +169,7 @@ public partial class AppearanceSettingsPage : UserControl
 
     private void webView_WebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
     {
-        if (App.Settings.GeneralSettings.ChatType == (int)ChatTypes.NativeChat)
+        if (ChatTypeExtensions.UsesNativeChat(App.Settings.GeneralSettings.ChatType))
         {
             string json = e.WebMessageAsJson;
 

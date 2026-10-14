@@ -236,6 +236,7 @@ public class GeneralSettings
     public bool BetterTtv_AdvEmoteMenu { get; set; } = true;
     public bool FrankerFaceZ { get; set; } = true;
     public string jChatURL { get; set; } = string.Empty;
+    public string StarviosChannel { get; set; } = string.Empty;
     public bool CheckForUpdates { get; set; } = true;
     public DateTime LastUpdateCheck { get; set; } = DateTime.MinValue;
     public Color ChatHighlightColor { get; set; } = Color.FromArgb(150, 245, 245, 0); // Yellow
@@ -256,6 +257,10 @@ public class jChatConfig
 {
     [JsonPropertyName("channel")]
     public string Channel { get; set; }
+
+    // Chat source for the NativeChat v2 engine: "twitch" (IRC) or "starvios".
+    [JsonPropertyName("source")]
+    public string Source { get; set; } = "twitch";
 
     // Boolean toggles
     [JsonPropertyName("animate")]

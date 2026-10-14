@@ -147,5 +147,29 @@
                         Click="btRestoreNativeChatDefaults_Click" />
             </StackPanel>
         </Grid>
+        <Grid Name="starviosNativeGrid" Visibility="Hidden" Grid.Column="1">
+            <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Width="127">
+                <Label Content="Starvios" HorizontalAlignment="Left" Margin="20,33,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+            </StackPanel>
+
+            <StackPanel HorizontalAlignment="Right" Orientation="Vertical" Width="274">
+                <TextBox Name="tbStarviosNativeUsername"
+                         HorizontalAlignment="Left"
+                         Height="23"
+                         Margin="20,27,0,0"
+                         TextWrapping="NoWrap"
+                         ui:ControlHelper.PlaceholderText="Canal de Starvios (ej: juanpiece)"
+                         VerticalAlignment="Top"
+                         Width="240"/>
+                <TextBlock Margin="20,8,0,0" Width="240" TextWrapping="Wrap" Foreground="Gray"
+                           Text="Escribe el nombre del canal o pega la URL starvios.com/live/..." />
+                <ui:HyperlinkButton Click="HyperlinkButtonAppearanceSettings_Click" Margin="20,10,0,0">
+                    <ui:SimpleStackPanel Orientation="Horizontal" Spacing="8">
+                        <ui:SymbolIcon Symbol="Link"/>
+                        <TextBlock Text="Go to Appearance Settings"/>
+                    </ui:SimpleStackPanel>
+                </ui:HyperlinkButton>
+            </StackPanel>
+        </Grid>
     </Grid>
 </UserControl>
