@@ -123,6 +123,7 @@ Chat = {
     disableSync: null,
     disablePruning: null,
     yt: null,
+    source: null,
     voice: null,
     bigSoloEmotes: null,
     messageImage: null,
@@ -497,117 +498,7 @@ Chat = {
       }
 
       // Load CSS
-      let size = sizes[Chat.info.size - 1];
-     
-      if (typeof Chat.info.font !== 'undefined') {
-        const fontValue = String(config.font); // Ensure it's a string
-        const fontIndex = parseInt(fontValue, 10);
-
-        // Check if the string was successfully parsed as a number AND is a valid index
-        if (!isNaN(fontIndex) && fontIndex >= 0 && fontIndex < fonts.length) {
-            // It's a valid index, so get the font name from the array
-            Chat.info.font = fontIndex;
-            console.log("Chat.info.font = " + fonts[fontIndex]);
-            appendCSS("font", fonts[fontIndex]);
-        } else {
-            // It's not a valid index, so it must be a custom font name
-            Chat.info.font = fontValue;
-            console.log("Chat.info.font = " + Chat.info.font);
-            loadCustomFont(Chat.info.font);
-        }
-      }
-      else {
-        console.warn("Chat.info.font is undefined!");
-      }
-      
-      /*
-      if (typeof Chat.info.font === "number") {
-        font = fonts[Chat.info.font];
-        appendCSS("font", font);
-      } else {
-        loadCustomFont(Chat.info.font);
-      }*/
-
-      if (Chat.info.size == 1) {
-        Chat.info.seven_scale = 20/14;
-      } else if (Chat.info.size == 2) {
-        Chat.info.seven_scale = 34/14;
-      } else if (Chat.info.size == 3) {
-        Chat.info.seven_scale = 48/14;
-      }
-
-      let emoteScale = 1;
-      if (Chat.info.emoteScale > 1) {
-        emoteScale = Chat.info.emoteScale;
-      }
-      if (emoteScale > 3) {
-        emoteScale = 3;
-      }
-
-      if (Chat.info.center) {
-        Chat.info.animate = false;
-        Chat.info.invert = false;
-        Chat.info.sms = false;
-        appendCSS("variant", "center");
-      } 
-      
-      if (Chat.info.sms) {
-        Chat.info.center = false;
-        Chat.info.animate = false;
-        Chat.info.invert = false;
-        Chat.info.shadow = 0;
-        Chat.info.stroke = false;
-        Chat.info.hidePaints = true;
-        Chat.info.disablePruning = true;
-        Chat.info.hideColon = false;
-        appendCSS("variant", "sms");
-      }
-
-      appendCSS("size", size);
-      if (emoteScale > 1) {
-        appendCSS("emoteScale_" + size, emoteScale);
-      }
-
-      if (Chat.info.height) {
-        if (Chat.info.height > 4) Chat.info.height = 4
-        let height = heights[Chat.info.height];
-        appendCSS("height", height);
-      }
-      if (Chat.info.stroke && Chat.info.stroke > 0) {
-        if (Chat.info.stroke > 2) Chat.info.stroke = 2
-        let stroke = strokes[Chat.info.stroke - 1];
-        appendCSS("stroke", stroke);
-      }
-      if (Chat.info.weight) {
-        // console.log("Weight is "+Chat.info.weight)
-        if (Chat.info.weight > 5 && Chat.info.weight < 100) {
-          Chat.info.weight = 5;
-          let weight = weights[Chat.info.weight - 1];
-          appendCSS("weight", weight);
-        } else if (Chat.info.weight >= 100) {
-            $("#chat_container").css("font-weight", Chat.info.weight);
-        } else {
-          let weight = weights[Chat.info.weight - 1];
-          appendCSS("weight", weight);
-        }
-      }
-      if (Chat.info.shadow && Chat.info.shadow > 0) {
-        if (Chat.info.shadow > 3) Chat.info.shadow = 3
-        let shadow = shadows[Chat.info.shadow - 1];
-        appendCSS("shadow", shadow);
-      }
-      if (Chat.info.smallCaps) {
-        appendCSS("variant", "SmallCaps");
-      }
-      if (Chat.info.invert) {
-        appendCSS("variant", "invert");
-      }
-      if (Chat.info.scale) {
-        // Set CSS variable for scaling
-        document.documentElement.style.setProperty('--scale', Chat.info.scale);
-        // Update viewport to accommodate scaling
-        document.documentElement.style.setProperty('--inv-scale', 1/Chat.info.scale);
-      }
+      Chat.applyAppearance();
 
       // Load badges
       TwitchAPI("/chat/badges/global", credentials).done(function (res) {
@@ -1979,10 +1870,134 @@ Chat = {
     }, 100);
   },
 
+  // Applies the visual settings (font, size, height, shadow...) as CSS.
+  // Shared by Twitch and Starvios sources.
+  applyAppearance: function () {
+      let size = sizes[Chat.info.size - 1];
+     
+      if (typeof Chat.info.font !== 'undefined') {
+        const fontValue = String(config.font); // Ensure it's a string
+        const fontIndex = parseInt(fontValue, 10);
+
+        // Check if the string was successfully parsed as a number AND is a valid index
+        if (!isNaN(fontIndex) && fontIndex >= 0 && fontIndex < fonts.length) {
+            // It's a valid index, so get the font name from the array
+            Chat.info.font = fontIndex;
+            console.log("Chat.info.font = " + fonts[fontIndex]);
+            appendCSS("font", fonts[fontIndex]);
+        } else {
+            // It's not a valid index, so it must be a custom font name
+            Chat.info.font = fontValue;
+            console.log("Chat.info.font = " + Chat.info.font);
+            loadCustomFont(Chat.info.font);
+        }
+      }
+      else {
+        console.warn("Chat.info.font is undefined!");
+      }
+      
+      /*
+      if (typeof Chat.info.font === "number") {
+        font = fonts[Chat.info.font];
+        appendCSS("font", font);
+      } else {
+        loadCustomFont(Chat.info.font);
+      }*/
+
+      if (Chat.info.size == 1) {
+        Chat.info.seven_scale = 20/14;
+      } else if (Chat.info.size == 2) {
+        Chat.info.seven_scale = 34/14;
+      } else if (Chat.info.size == 3) {
+        Chat.info.seven_scale = 48/14;
+      }
+
+      let emoteScale = 1;
+      if (Chat.info.emoteScale > 1) {
+        emoteScale = Chat.info.emoteScale;
+      }
+      if (emoteScale > 3) {
+        emoteScale = 3;
+      }
+
+      if (Chat.info.center) {
+        Chat.info.animate = false;
+        Chat.info.invert = false;
+        Chat.info.sms = false;
+        appendCSS("variant", "center");
+      } 
+      
+      if (Chat.info.sms) {
+        Chat.info.center = false;
+        Chat.info.animate = false;
+        Chat.info.invert = false;
+        Chat.info.shadow = 0;
+        Chat.info.stroke = false;
+        Chat.info.hidePaints = true;
+        Chat.info.disablePruning = true;
+        Chat.info.hideColon = false;
+        appendCSS("variant", "sms");
+      }
+
+      appendCSS("size", size);
+      if (emoteScale > 1) {
+        appendCSS("emoteScale_" + size, emoteScale);
+      }
+
+      if (Chat.info.height) {
+        if (Chat.info.height > 4) Chat.info.height = 4
+        let height = heights[Chat.info.height];
+        appendCSS("height", height);
+      }
+      if (Chat.info.stroke && Chat.info.stroke > 0) {
+        if (Chat.info.stroke > 2) Chat.info.stroke = 2
+        let stroke = strokes[Chat.info.stroke - 1];
+        appendCSS("stroke", stroke);
+      }
+      if (Chat.info.weight) {
+        // console.log("Weight is "+Chat.info.weight)
+        if (Chat.info.weight > 5 && Chat.info.weight < 100) {
+          Chat.info.weight = 5;
+          let weight = weights[Chat.info.weight - 1];
+          appendCSS("weight", weight);
+        } else if (Chat.info.weight >= 100) {
+            $("#chat_container").css("font-weight", Chat.info.weight);
+        } else {
+          let weight = weights[Chat.info.weight - 1];
+          appendCSS("weight", weight);
+        }
+      }
+      if (Chat.info.shadow && Chat.info.shadow > 0) {
+        if (Chat.info.shadow > 3) Chat.info.shadow = 3
+        let shadow = shadows[Chat.info.shadow - 1];
+        appendCSS("shadow", shadow);
+      }
+      if (Chat.info.smallCaps) {
+        appendCSS("variant", "SmallCaps");
+      }
+      if (Chat.info.invert) {
+        appendCSS("variant", "invert");
+      }
+      if (Chat.info.scale) {
+        // Set CSS variable for scaling
+        document.documentElement.style.setProperty('--scale', Chat.info.scale);
+        // Update viewport to accommodate scaling
+        document.documentElement.style.setProperty('--inv-scale', 1/Chat.info.scale);
+      }
+  },
+
   connect: function (channel) {
     Chat.info.channel = channel;
     var title = $(document).prop("title");
     $(document).prop("title", title + Chat.info.channel);
+
+    if (Chat.info.source === "starvios") {
+      // Starvios: no Twitch lookups. Only the appearance setup, then the Starvios source.
+      Chat.info.id = "1";
+      Chat.applyAppearance();
+      window.StarviosSource.start(channel);
+      return;
+    }
 
     Chat.load(function () {
       SendInfoText("Starting Native Chat");

@@ -911,7 +911,7 @@ public partial class MainWindow : Window, BrowserWindow
 
             var chatType = (ChatTypes)App.Settings.GeneralSettings.ChatType;
 
-            if (chatType == ChatTypes.NativeChat)
+            if (ChatTypeExtensions.UsesNativeChat((int)chatType))
             {
                 if (!_isShowingRepairPrompt)
                 {
@@ -963,7 +963,7 @@ public partial class MainWindow : Window, BrowserWindow
                 "Restore Complete",
                 MessageBoxButton.OK,
                 MessageBoxImage.Information);
-            if (App.Settings.GeneralSettings.ChatType == (int)ChatTypes.NativeChat)
+            if (ChatTypeExtensions.UsesNativeChat(App.Settings.GeneralSettings.ChatType))
                 SetupChatProvider();
         }
         catch (Exception ex)
@@ -991,7 +991,7 @@ public partial class MainWindow : Window, BrowserWindow
                 Debug.WriteLine(ex.Message);
             }
         }
-        else if (App.Settings.GeneralSettings.ChatType == (int)ChatTypes.NativeChat)
+        else if (ChatTypeExtensions.UsesNativeChat(App.Settings.GeneralSettings.ChatType))
         {
             string json = e.WebMessageAsJson;
             if (string.IsNullOrWhiteSpace(json))

@@ -139,9 +139,9 @@ public partial class SettingsWindow : Window
         {
             _chatSettingsPage.ChatTypeChanged((ChatTypes)index);
 
-            listItemAppearance.IsEnabled = ((ChatTypes)index) == ChatTypes.NativeChat;
+            listItemAppearance.IsEnabled = ChatTypeExtensions.UsesNativeChat(index);
 
-            if (((ChatTypes)index) == ChatTypes.NativeChat)
+            if (ChatTypeExtensions.UsesNativeChat(index))
                 textBlockAppearance.ClearValue(TextBlock.ForegroundProperty);
             else
                 textBlockAppearance.Foreground = SystemColors.GrayTextBrush;
